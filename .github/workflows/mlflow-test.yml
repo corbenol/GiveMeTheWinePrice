@@ -1,10 +1,9 @@
-ame: TEST MLflow Model
+name: TEST MLflow Model (Docker)
 
 on:
   workflow_run:
-    workflows: ["TRAIN MLflow Model"]
-    types:
-      - completed
+    workflows: ["TRAIN MLflow Model (Docker)"]
+    types: [completed]
 
 jobs:
   test_model:
@@ -15,44 +14,46 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ---------------------------
-      # Install test dependencies
-      # ---------------------------
-      - name: Install dependencies
-        run: |
-          pip install -r requirements-tests.txt
+      # ------------------------------------------------------------------
+      # Build Docker test image
+      # ------------------------------------------------------------------
+      - name: Build test Docker image
+        run: docker build -f test/Dockerfile.test -t wine-test:latest  .
 
-      # ---------------------------
-      # Run all model tests
-      # ---------------------------
-      - name: Run PyTest suite
+      # ------------------------------------------------------------------
+      # Run pytest inside Docker
+      # ------------------------------------------------------------------
+      - name: Run tests inside Docker
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.BACKEND_STORE_URI }}
-          MODEL_NAME: "WinePriceRegressorPipeline"
-          MODEL_STAGE: "ready_to_test"
+          MODEL_NAME: WinePriceRegressorPipeline
+          MODEL_STAGE: ready_to_test
         run: |
-          pytest tests/model -v
+          docker run --rm \
+            -e MLFLOW_TRACKING_URI \
+            -e MODEL_NAME \
+            -e MODEL_STAGE \
+            wine-test:latest \
+            pytest tests/model -v
 
-      # ---------------------------
-      # If OK → MLflow set-alias production
-      # ---------------------------
-      - name: Promote model to production
+      # ------------------------------------------------------------------
+      # Promote to production if tests pass
+      # ------------------------------------------------------------------
+      - name: Promote MLflow alias to production
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.BACKEND_STORE_URI }}
           MODEL_NAME: WinePriceRegressorPipeline
         run: |
           pip install mlflow
+
           python3 - << 'EOF'
-import mlflow
+          import mlflow
 
-client = mlflow.MlflowClient()
-model_name = "${MODEL_NAME}"
+          client = mlflow.MlflowClient()
+          model_name = "${MODEL_NAME}"
 
-# Retrieve version with alias "ready_to_test"
-versions = client.get_model_version_by_alias(model_name, "ready_to_test")
-version = versions.version
+          v = client.get_model_version_by_alias(model_name, "ready_to_test")
+          client.set_registered_model_alias(model_name, "production", v.version)
 
-# Promote to production
-client.set_registered_model_alias(model_name, "production", version)
-print(f"Model version {version} promoted to production.")
-EOF
+          print(f"Version {v.version} promoted to production")
+          EOF

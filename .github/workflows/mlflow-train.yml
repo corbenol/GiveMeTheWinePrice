@@ -37,8 +37,8 @@ jobs:
     - name: Build train Docker image on EC2
       run: |
         ssh ec2-training "
-          cd ~/wine_training &&
-          /usr/bin/docker build -t wine-train:latest  -f Dockerfile.train .
+          cd ~/wine_training/model &&
+          /usr/bin/docker build  -f Dockerfile.train -t wine-train:latest .
         "
 
     # ---------------------------
