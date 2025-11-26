@@ -1,0 +1,36 @@
+# Base Python légère
+FROM python:3.10-slim
+
+WORKDIR /home/app
+
+# Dépendances système minimales
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl unzip build-essential && \
+    rm -rf /var/lib/apt/lists/*
+
+# AWS CLI si nécessaire pour accéder aux données S3
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+    && unzip awscliv2.zip \
+    && ./aws/install \
+    && rm -rf awscliv2.zip aws/
+
+# Copier le fichier de dépendances TEST
+COPY requirements-tests.txt .
+
+# Installer les dépendances Python pour TEST
+RUN pip install --no-cache-dir -r requirements-test.txt
+
+# Créer un utilisateur non-root
+RUN groupadd -g 1000 ec2-user && useradd -u 1000 -g 1000 -m ec2-user
+USER ec2-user
+
+# Copier uniquement le dossier tests et utils nécessaires
+COPY tests/ ./tests/
+
+# Variables d'environnement pour MLflow / modèle
+ENV MLFLOW_TRACKING_URI=""
+ENV MODEL_NAME=""
+ENV MODEL_STAGE="ready_to_test"
+
+# Commande par défaut pour lancer tous les tests
+CMD ["pytest", "tests/", "-v", "--maxfail=1", "--disable-warnings"]
