@@ -1,0 +1,67 @@
+name: Train MLflow Model in Docker on EC2
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    # ---------------------------
+    # 1. Configure SSH
+    # ---------------------------
+    - name: Configure SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        echo "Host ec2-training
+              HostName ${{ secrets.EC2_HOST }}
+              User ec2-user
+              StrictHostKeyChecking no" >> ~/.ssh/config
+
+    # ---------------------------
+    # 2. Sync project to EC2
+    # ---------------------------
+    - name: Sync project to EC2
+      run: |
+        rsync -avz --delete ./ ec2-training:~/wine_training/
+
+    # ---------------------------
+    # 3. Build train Docker image
+    # ---------------------------
+    - name: Build train Docker image on EC2
+      run: |
+        ssh ec2-training "
+          cd ~/wine_training &&
+          /usr/bin/docker build -t wine-train:latest  -f Dockerfile.train .
+        "
+
+    # ---------------------------
+    # 4. Run MLflow training
+    # ---------------------------
+    - name: Run MLflow training in Docker
+      run: |
+        ssh ec2-training "
+          export AWS_ACCESS_KEY_ID='${{ secrets.AWS_ACCESS_KEY_ID }}' &&
+          export AWS_SECRET_ACCESS_KEY='${{ secrets.AWS_SECRET_ACCESS_KEY }}' &&
+          export BACKEND_STORE_URI='${{ secrets.BACKEND_STORE_URI }}' &&
+          export ARTIFACT_DATA='${{ secrets.ARTIFACT_DATA }}' &&
+          export ARTIFACT_ROOT='${{ secrets.ARTIFACT_ROOT }}' &&
+
+          /usr/bin/docker run --rm \
+            --user ec2-user \
+            -e AWS_ACCESS_KEY_ID=\$AWS_ACCESS_KEY_ID \
+            -e AWS_SECRET_ACCESS_KEY=\$AWS_SECRET_ACCESS_KEY \
+            -e BACKEND_STORE_URI=\$BACKEND_STORE_URI \
+            -e ARTIFACT_ROOT=\$ARTIFACT_ROOT \
+            -e ARTIFACT_DATA=\$ARTIFACT_DATA \
+            -v ~/wine_training:/app \
+            -w /app \
+            wine-train:latest \
+            python train.py
+        "

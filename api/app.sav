@@ -1,0 +1,99 @@
+from typing import  Union
+import pandas as pd
+import numpy as np
+import mlflow.pyfunc
+from fastapi import FastAPI
+from pydantic import BaseModel, field_validator
+from starlette.responses import RedirectResponse
+
+# documentation
+description = """
+Bienvenue sur notre API pour estimer le prix du vin en fonction de  
+* son pays  
+* sa description oenologique  
+* sa région  
+* son millesime (4 digits)  
+
+##  Endpoints
+* `/`: Redirige vers la page `/docs`
+* `/health`:  état du service
+## Machine Learning
+* `/predict`:**POST**   (country : str | description : str | province : str | millesime : str (4 chiffres))
+
+"""
+
+tags_metadata = [
+    {"name": "Accueil", "description": "Page d'accueil" },
+    {"name": "Check", "description": "vérification de la disponibilité du service"},
+    {"name": "Machine Learning", "description": "Accès au service de prédiction" }
+]
+
+
+# --- Configuration MLOps ---
+MLFLOW_TRACKING_URI = "http://ec2-16-16-166-175.eu-north-1.compute.amazonaws.com:5000/"
+MODEL_NAME = "WinePriceRegressorPipeline"
+MODEL_STAGE = "production" 
+# les codes acces S3 sont dans l'environnemment HF spaces
+
+class WineFeatures(BaseModel):
+    country: str = "France"
+    description: str = "Tart and snappy, the flavors of lime flesh and rind dominate"
+    province: str = "Alsace"
+    millesime: str = "2022"
+    @field_validator('country', 'description', 'province', mode='before')
+    @classmethod
+    def to_lower(cls, value: str):
+        if isinstance(value, str):
+            return value.lower()
+        return value 
+    
+
+# --- Chargement du Modèle au Démarrage ---
+try:
+    mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+    # Charge le modèle le plus récent aliasé 'Production'
+    logged_model_uri = f"models:/{MODEL_NAME}@{MODEL_STAGE}"
+    model = mlflow.pyfunc.load_model(logged_model_uri)
+    print("Modèle chargé avec succès depuis MLflow.")
+except Exception as e:
+    print(f"ÉCHEC DU CHARGEMENT DU MODÈLE MLFLOW : {e}")
+    model = None 
+
+app = FastAPI(title="Quel prix pour ce vin ?",
+    description=description,
+    version="0.1",
+    openapi_tags=tags_metadata
+)
+
+@app.get("/", tags=["Accueil"])
+async def index():
+    """
+    Redirige la page d'accueil vers la documentation interactive de l'API (/docs).
+    """
+    # Renvoie une réponse de redirection temporaire vers l'URL /docs
+    return RedirectResponse(url="/docs")
+@app.get("/health", tags=["Check"])
+def health_check():
+    """ Vérifie que le service est en ligne et que le modèle est chargé. """
+    status = "OK" if model is not None else "Model Loading Failed"
+    return {"status": status, "model_name": MODEL_NAME}
+
+@app.post("/predict",tags=["Machine Learning"])
+async def predict_price(features: WineFeatures):
+    """
+    Accès au service de prédiction du prix du vin
+    """
+    
+    if model is None:
+        return {"error": "Modèle non chargé, vérifiez la connexion MLflow."}, 503
+
+    # Conversion des données entrantes en DataFrame (requis par le pipeline)
+    input_data = pd.DataFrame([features.model_dump()])
+    
+    # 1. Prédiction sur l'échelle Log
+    log_prediction = model.predict(input_data)[0]
+    
+    # 2. Retour à l'échelle réelle, np.log lors du training
+    price_prediction = np.exp(log_prediction) 
+
+    return {"predicted_price_eur": round(float(price_prediction), 2)}

@@ -1,0 +1,58 @@
+ame: TEST MLflow Model
+
+on:
+  workflow_run:
+    workflows: ["TRAIN MLflow Model"]
+    types:
+      - completed
+
+jobs:
+  test_model:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ---------------------------
+      # Install test dependencies
+      # ---------------------------
+      - name: Install dependencies
+        run: |
+          pip install -r requirements-tests.txt
+
+      # ---------------------------
+      # Run all model tests
+      # ---------------------------
+      - name: Run PyTest suite
+        env:
+          MLFLOW_TRACKING_URI: ${{ secrets.BACKEND_STORE_URI }}
+          MODEL_NAME: "WinePriceRegressorPipeline"
+          MODEL_STAGE: "ready_to_test"
+        run: |
+          pytest tests/model -v
+
+      # ---------------------------
+      # If OK → MLflow set-alias production
+      # ---------------------------
+      - name: Promote model to production
+        env:
+          MLFLOW_TRACKING_URI: ${{ secrets.BACKEND_STORE_URI }}
+          MODEL_NAME: WinePriceRegressorPipeline
+        run: |
+          pip install mlflow
+          python3 - << 'EOF'
+import mlflow
+
+client = mlflow.MlflowClient()
+model_name = "${MODEL_NAME}"
+
+# Retrieve version with alias "ready_to_test"
+versions = client.get_model_version_by_alias(model_name, "ready_to_test")
+version = versions.version
+
+# Promote to production
+client.set_registered_model_alias(model_name, "production", version)
+print(f"Model version {version} promoted to production.")
+EOF

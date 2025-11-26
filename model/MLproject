@@ -1,0 +1,14 @@
+name: wine-price-predictor
+
+#docker_env:
+#  image: wine-train:latest
+#  environment:
+#    - MLFLOW_TRACKING_URI
+#    - AWS_ACCESS_KEY_ID
+#    - AWS_SECRET_ACCESS_KEY
+#    - BACKEND_STORE_URI
+#    - ARTIFACT_ROOT
+
+entry_points:
+  main:
+    command: "python train.py"
