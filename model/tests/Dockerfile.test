@@ -22,6 +22,10 @@ RUN pip install --no-cache-dir -r requirements-test.txt
 
 # Créer un utilisateur non-root
 RUN groupadd -g 1000 ec2-user && useradd -u 1000 -g 1000 -m ec2-user
+
+# Fix permissions
+RUN mkdir -p /home/app/.pytest_cache && chown -R ec2-user:ec2-user /home/app
+
 USER ec2-user
 
 # Copier uniquement le dossier tests et utils nécessaires
