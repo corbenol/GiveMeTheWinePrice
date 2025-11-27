@@ -48,7 +48,7 @@ jobs:
         run: |
           pip install mlflow
 
-          python3 - << 'EOF'
+          python3 - << "EOF"
           import mlflow
 
           client = mlflow.MlflowClient()
