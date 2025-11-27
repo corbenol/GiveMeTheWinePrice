@@ -25,7 +25,7 @@ RUN groupadd -g 1000 ec2-user && useradd -u 1000 -g 1000 -m ec2-user
 USER ec2-user
 
 # Copier uniquement le dossier tests et utils nécessaires
-COPY tests/ ./tests/
+COPY . .
 
 # Variables d'environnement pour MLflow / modèle
 ENV MLFLOW_TRACKING_URI=""
@@ -33,4 +33,4 @@ ENV MODEL_NAME=""
 ENV MODEL_STAGE="ready_to_test"
 
 # Commande par défaut pour lancer tous les tests
-CMD ["pytest", "tests/", "-v", "--maxfail=1", "--disable-warnings"]
+CMD ["pytest", ".", "-v"]
