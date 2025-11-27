@@ -33,6 +33,8 @@ jobs:
             -e MLFLOW_TRACKING_URI \
             -e MODEL_NAME \
             -e MODEL_STAGE \
+            -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
+            -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
             wine-test:latest \
             pytest tests -v
 
