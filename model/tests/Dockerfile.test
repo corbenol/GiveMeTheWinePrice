@@ -36,6 +36,8 @@ COPY model ./model
 ENV MLFLOW_TRACKING_URI=""
 ENV MODEL_NAME=""
 ENV MODEL_STAGE="ready_to_test"
+ENV AWS_ACCESS_KEY_ID=""
+ENV AWS_SECRET_ACCESS_KEY=""
 
 # Commande par défaut pour lancer tous les tests
 CMD ["pytest", ".", "-v"]
