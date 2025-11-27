@@ -52,7 +52,8 @@ jobs:
           import mlflow
 
           client = mlflow.MlflowClient()
-          model_name = "${MODEL_NAME}"
+          #model_name = "${MODEL_NAME}"
+          model_name="WinePriceRegressorPipeline"
 
           print(f'modele : {model_name}')
           
