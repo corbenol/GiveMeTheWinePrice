@@ -4,9 +4,6 @@ scikit-learn==1.4.2
 requests>=2.31.0,<3
 pandas
 gunicorn
-matplotlib
-seaborn
-plotly
 psycopg2-binary
 xgboost
 category_encoders==2.6.1

@@ -60,8 +60,8 @@ jobs:
             -e BACKEND_STORE_URI=\$BACKEND_STORE_URI \
             -e ARTIFACT_ROOT=\$ARTIFACT_ROOT \
             -e ARTIFACT_DATA=\$ARTIFACT_DATA \
-            -v ~/wine_training:/app \
-            -w /app \
+            -v ~/wine_training:/home/app \
+            -w /home/app \
             wine-train:latest \
             python train.py
         "
