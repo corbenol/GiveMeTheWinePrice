@@ -18,7 +18,7 @@ jobs:
       # Build Docker test image
       # ------------------------------------------------------------------
       - name: Build test Docker image
-        run: docker build -f test/Dockerfile.test -t wine-test:latest  .
+        run: docker build -f model/test/Dockerfile.test -t wine-test:latest  .
 
       # ------------------------------------------------------------------
       # Run pytest inside Docker

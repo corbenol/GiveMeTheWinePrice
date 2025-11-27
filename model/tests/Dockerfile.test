@@ -15,7 +15,7 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     && rm -rf awscliv2.zip aws/
 
 # Copier le fichier de dépendances TEST
-COPY requirements-tests.txt .
+COPY requirements-test.txt .
 
 # Installer les dépendances Python pour TEST
 RUN pip install --no-cache-dir -r requirements-test.txt
