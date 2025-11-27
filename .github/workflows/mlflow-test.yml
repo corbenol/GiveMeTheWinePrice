@@ -2,7 +2,7 @@ name: TEST MLflow Model (Docker)
 
 on:
   workflow_run:
-    workflows: ["Train MLflow Model in Docker on EC2"]
+    workflows: ["train"]
     types: [completed]
 
 jobs:
