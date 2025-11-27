@@ -124,7 +124,7 @@ def create_preprocessor(df_train):
 
 def run_mlops_pipeline_with_mlflow(df_raw):
     
-    TRACK_URI='http://ec2-16-16-166-175.eu-north-1.compute.amazonaws.com:5000'
+    TRACK_URI='http://ec2-16-16-98-201.eu-north-1.compute.amazonaws.com:5000'
     EXPERIMENT_NAME="Wine_Price_Regression"
     log.info(f"Mlflow tracking, URI : {TRACK_URI}, Experiment : {EXPERIMENT_NAME}")
     # Nom de l'expérience MLflow
