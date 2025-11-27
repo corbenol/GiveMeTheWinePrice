@@ -54,6 +54,9 @@ jobs:
           client = mlflow.MlflowClient()
           model_name = "${MODEL_NAME}"
 
+          print(f'modele : {model_name}')
+          
+
           v = client.get_model_version_by_alias(model_name, "ready_to_test")
           client.set_registered_model_alias(model_name, "production", v.version)
 
