@@ -2,7 +2,7 @@ name: TEST MLflow Model (Docker)
 
 on:
   workflow_run:
-    workflows: ["TRAIN MLflow Model (Docker)"]
+    workflows: ["Train MLflow Model in Docker on EC2"]
     types: [completed]
 
 jobs:
@@ -34,7 +34,7 @@ jobs:
             -e MODEL_NAME \
             -e MODEL_STAGE \
             wine-test:latest \
-            pytest tests/model -v
+            pytest model/tests -v
 
       # ------------------------------------------------------------------
       # Promote to production if tests pass
