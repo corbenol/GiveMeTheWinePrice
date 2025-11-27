@@ -61,7 +61,7 @@ jobs:
             -e ARTIFACT_ROOT=\$ARTIFACT_ROOT \
             -e ARTIFACT_DATA=\$ARTIFACT_DATA \
             -v ~/wine_training:/home/app \
-            -w /home/app \
+            -w /home/app/model \
             wine-train:latest \
             python train.py
         "
