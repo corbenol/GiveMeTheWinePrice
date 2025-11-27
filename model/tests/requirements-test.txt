@@ -6,3 +6,4 @@ pytest
 httpx>=0.26 
 pytest>=7.0
 category_encoders==2.6.1
+xgboost
