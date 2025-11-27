@@ -15,7 +15,7 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     && rm -rf awscliv2.zip aws/
 
 # Copier le fichier de dépendances TEST
-COPY model/tests/requirements-test.txt .
+COPY model/tests/requirements-test.txt ./requirements-test.txt
 
 # Installer les dépendances Python pour TEST
 RUN pip install --no-cache-dir -r requirements-test.txt
@@ -29,7 +29,8 @@ RUN mkdir -p /home/app/.pytest_cache && chown -R ec2-user:ec2-user /home/app
 USER ec2-user
 
 # Copier uniquement le dossier tests et utils nécessaires
-COPY . .
+COPY model/tests ./tests
+COPY model ./model
 
 # Variables d'environnement pour MLflow / modèle
 ENV MLFLOW_TRACKING_URI=""
