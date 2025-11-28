@@ -20,8 +20,11 @@ jobs:
           docker run --rm \
            -e API_URL="http://localhost:7860"\
            -e MLFLOW_TRACKING_URI="${{ secrets.BACKEND_STORE_URI }}" \
+           -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+           -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" \
            -e NEON_URI="${{ secrets.NEON_TEST }}" \
             wine-api-test
+
 
   deploy:
     needs: test
