@@ -8,6 +8,8 @@ from starlette.responses import RedirectResponse
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import os
+from fastapi.responses import JSONResponse
+
 
 # documentation
 description = """
@@ -124,7 +126,10 @@ async def predict_price(features: WineFeatures):
     Accès au service de prédiction du prix du vin
     """
     if model is None:
-        return {"error": "Modèle non chargé, vérifiez la connexion MLflow."}, 503
+        return JSONResponse(
+            status_code=503,
+            content={"error": "Modèle non chargé, vérifiez la connexion MLflow."}
+        )
     # Conversion des données entrantes en DataFrame (requis par le pipeline)
     input_data = pd.DataFrame([features.model_dump()])
     # Prédiction sur l'échelle Log
@@ -157,4 +162,4 @@ async def predict_price(features: WineFeatures):
     except Exception as e:
         print(f"Erreur insertion Neon : {e}")
 
-    return {"predicted_price_eur": price_numeric}
+    return {"prediction": price_numeric}
