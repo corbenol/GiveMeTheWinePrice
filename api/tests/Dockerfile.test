@@ -21,4 +21,4 @@ EXPOSE 7860
 
 # Commande pour démarrer le serveur et exécuter les tests
 #CMD sh -c "uvicorn app:app --host 0.0.0.0 --port 7860 & pytest tests -v"
-CMD ["/bin/bash", "-c", "uvicorn app:app --host 0.0.0.0 --port 7860 & sleep 3 && pytest tests -v"]
+CMD ["/bin/bash", "-c", "uvicorn app:app --host 0.0.0.0 --port 7860 & python3 wait_for_api.py && pytest tests -v"]

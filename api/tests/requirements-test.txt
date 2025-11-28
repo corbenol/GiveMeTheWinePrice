@@ -1,8 +1,10 @@
 pandas
 numpy
 pytest
-requests
 httpx
 pytest-asyncio
 fastapi
 uvicorn[standard]
+mlflow==2.21.3
+requests>=2.31.0,<3
+scikit-learn==1.4.2
