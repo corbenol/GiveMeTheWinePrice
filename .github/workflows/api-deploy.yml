@@ -50,13 +50,16 @@ jobs:
           python3 - <<EOF
           from huggingface_hub import HfApi
           api = HfApi()
-
           repo_id = "corbenol/wine-price-predictor"
+          token = os.getenv("HF_TOKEN")
+          if not token:
+            print("Erreur: Le jeton HF_TOKEN n'a pas été trouvé dans l'environnement.")
+            exit(1)
           api.upload_folder(
               folder_path="hf-space",
               repo_id=repo_id,
               repo_type="space",
-              token="${HF_TOKEN}",
+              token=token,
               path_in_repo=""
           )
           print("Déploiement terminé sur HuggingFace !")
