@@ -17,7 +17,7 @@ jobs:
 
       - name: Run tests
         run: |
-          docker run --rm wine-api-test
+          docker run -rm -e API_URL="http://localhost:7860" wine-api-test
 
   deploy:
     needs: test
