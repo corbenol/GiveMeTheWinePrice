@@ -49,6 +49,7 @@ jobs:
         run: |
           python3 - <<EOF
           from huggingface_hub import HfApi
+          import os
           api = HfApi()
           repo_id = "corbenol/wine-price-predictor"
           token = os.getenv("HF_TOKEN")
