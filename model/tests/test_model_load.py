@@ -1,3 +1,5 @@
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 def test_model_can_be_loaded(mlflow_config, loaded_model):
     """

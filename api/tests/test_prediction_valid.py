@@ -1,5 +1,7 @@
 import requests
 import numpy as np
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 def test_api_prediction_valid_input(predict_url):

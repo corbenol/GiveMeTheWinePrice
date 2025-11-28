@@ -41,7 +41,7 @@ jobs:
           mkdir hf-space
           cp api/app.py hf-space/app.py
           cp api/requirements-api.txt hf-space/requirements.txt
-          cp api/Dockerfile.api hf-space/Dockerfile
+          cp api/Dockerfile hf-space/Dockerfile
 
       - name: Push to HuggingFace Space
         env:

@@ -1,4 +1,6 @@
 import requests
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 def test_api_prediction_invalid_input(predict_url):
     """Ensure API returns a clean validation error for malformed payloads."""

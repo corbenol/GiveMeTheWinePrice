@@ -1,6 +1,9 @@
 import os
 import pytest
 import mlflow
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
 
 
 @pytest.fixture(scope="session")

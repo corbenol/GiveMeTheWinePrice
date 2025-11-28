@@ -1,5 +1,7 @@
 import os
 import pytest
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 API_URL = os.getenv("API_URL","http://localhost:7860")
 HEALTH_ENDPOINT = os.getenv("API_HEALTH_ENDPOINT", "/health")

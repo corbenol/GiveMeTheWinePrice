@@ -1,6 +1,8 @@
 import requests
 import time
 import os
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # Paramètres de connexion
 API_HOST = os.getenv("API_HOST", "localhost")

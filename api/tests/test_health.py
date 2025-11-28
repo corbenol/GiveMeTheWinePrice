@@ -1,5 +1,6 @@
 import requests
-
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 def test_api_health(health_url):
     """Check that the API health endpoint responds correctly."""

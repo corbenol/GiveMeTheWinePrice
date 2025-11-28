@@ -1,4 +1,6 @@
 import mlflow
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 def test_model_signature_is_valid(mlflow_config):
     """
