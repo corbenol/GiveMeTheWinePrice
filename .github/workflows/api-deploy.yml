@@ -1,0 +1,56 @@
+name: Deploy API
+
+on:
+  push:
+    tags:
+      - "deploy-*"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build test image
+        run: |
+          docker build -f api/tests/Dockerfile.test -t wine-api-test ./api/tests
+
+      - name: Run tests
+        run: |
+          docker run --rm wine-api-test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install HF client
+        run: pip install huggingface_hub
+
+      - name: Prepare HuggingFace Space folder
+        run: |
+          mkdir hf-space
+          cp api/app.py hf-space/app.py
+          cp api/requirements-api.txt hf-space/requirements.txt
+          cp api/Dockerfile.api hf-space/Dockerfile
+
+      - name: Push to HuggingFace Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          python3 - <<EOF
+          from huggingface_hub import HfApi
+          api = HfApi()
+
+          repo_id = "corbenol/wine-price-predictor"
+          api.upload_folder(
+              folder_path="hf-space",
+              repo_id=repo_id,
+              repo_type="space",
+              token="${HF_TOKEN}",
+              path_in_repo=""
+          )
+          print("Déploiement terminé sur HuggingFace !")
+          EOF
