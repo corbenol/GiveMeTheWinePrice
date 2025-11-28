@@ -8,7 +8,7 @@ ENV PATH="/home/user/.local/bin:$PATH"
 WORKDIR /app
 
 # Copier requirements et installer
-COPY --chown=user ./api/test/requirements-test.txt ./requirements-test.txt
+COPY --chown=user ./api/tests/requirements-test.txt ./requirements-test.txt
 COPY --chown=user ./api/app.py .
 COPY --chown=user ./api/tests/ tests/
 
@@ -20,4 +20,5 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 EXPOSE 7860
 
 # Commande pour démarrer le serveur et exécuter les tests
-CMD sh -c "uvicorn app:app --host 0.0.0.0 --port 7860 & pytest tests -v"
+#CMD sh -c "uvicorn app:app --host 0.0.0.0 --port 7860 & pytest tests -v"
+CMD ["/bin/bash", "-c", "uvicorn app:app --host 0.0.0.0 --port 7860 & sleep 3 && pytest tests -v"]
