@@ -1,4 +1,5 @@
 import requests
+import numpy as np
 
 
 def test_api_prediction_valid_input(predict_url):
@@ -16,4 +17,4 @@ def test_api_prediction_valid_input(predict_url):
     data = response.json()
 
     assert "prediction" in data
-    assert isinstance(data["prediction"], (int, float))
+    assert isinstance(data["prediction"], (int, float,np.float32, np.float64))
