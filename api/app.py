@@ -50,10 +50,10 @@ def get_db_conn():
     return psycopg2.connect(NEON_URI, cursor_factory=RealDictCursor)
 
 class WineFeatures(BaseModel):
-    country: str = "France"
-    description: str = "Tart and snappy, the flavors of lime flesh and rind dominate"
-    province: str = "Alsace"
-    millesime: str = "2022"
+    country: str 
+    description: str 
+    province: str 
+    millesime: str 
     @field_validator('country', 'description', 'province', mode='before')
     @classmethod
     def to_lower(cls, value: str):
