@@ -13,8 +13,8 @@ jobs:
 
       - name: Build test image
         run: |
-          docker build -f api/tests/Dockerfile.test -t wine-api-test ./api/tests
-
+          docker build -f api/tests/Dockerfile.test -t wine-api-test .
+          
       - name: Run tests
         run: |
           docker run -rm -e API_URL="http://localhost:7860" wine-api-test
