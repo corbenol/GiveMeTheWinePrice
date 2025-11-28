@@ -11,7 +11,7 @@ WORKDIR /app
 COPY --chown=user ./api/tests/requirements-test.txt ./requirements-test.txt
 COPY --chown=user ./api/app.py .
 COPY --chown=user ./api/tests/ tests/
-
+COPY --chown=user ./api/tests/wait_for_api.py ./wait_for_api.py
 
 RUN pip install --no-cache-dir --upgrade -r requirements-test.txt
 
