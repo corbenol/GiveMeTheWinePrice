@@ -8,15 +8,13 @@ ENV PATH="/home/user/.local/bin:$PATH"
 WORKDIR /app
 
 # Copier requirements et installer
-COPY --chown=user api/test/requirements-test.txt requirements-test.txt
+COPY --chown=user api/test/requirements-test.txt ./requirements-test.txt
 COPY --chown=user api/app.py .
 COPY --chown=user api/tests/ tests/
 
 
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-# Installer pytest et requests pour tests
-RUN pip install --no-cache-dir pytest requests pytest-asyncio
 
 # Exposer le port de l'API
 EXPOSE 7860
