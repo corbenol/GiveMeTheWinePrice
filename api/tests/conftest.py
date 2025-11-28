@@ -1,7 +1,7 @@
 import os
 import pytest
 
-API_URL = os.getenv("API_URL")
+API_URL = os.getenv("API_URL","http://localhost:7860")
 HEALTH_ENDPOINT = os.getenv("API_HEALTH_ENDPOINT", "/health")
 PREDICT_ENDPOINT = os.getenv("API_PREDICT_ENDPOINT", "/predict")
 
