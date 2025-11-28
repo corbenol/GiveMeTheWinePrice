@@ -13,7 +13,6 @@ COPY --chown=user api/app.py .
 COPY --chown=user api/tests/ tests/
 
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
-COPY --chown=user ../app.py .
 
 # Installer pytest et requests pour tests
 RUN pip install --no-cache-dir pytest requests pytest-asyncio
