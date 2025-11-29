@@ -9,12 +9,11 @@ ENV PATH="/home/user/.local/bin:$PATH"
 WORKDIR /app
 
 # Copie des dépendances et installation
-# Le chemin est relatif au contexte de build (qui sera le dossier 'drift' dans le workflow)
-COPY --chown=user requirements-drift.txt requirements.txt
+
+# Copier requirements et installer
+COPY --chown=user ./drift/requirements-drift.txt ./requirements.txt
+COPY --chown=user ./drift/drift_monitor.py .
+
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-# Copie du script Python
-COPY --chown=user drift_monitor.py drift_monitor.py
-
-# Définition de la commande par défaut (sera surchargée par le workflow)
-# Nous ne définissons pas de CMD ici car il sera lancé directement par GitHub Actions.
+#pas de CMD ici car il sera lancé directement par GitHub Actions.

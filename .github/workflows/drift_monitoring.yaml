@@ -25,8 +25,8 @@ jobs:
         run: |
           # 1. Construction de l'image Docker à partir du répertoire 'drift'
           # Le chemin du Dockerfile est relatif à la racine du dépôt.
-          docker build -t drift-monitor ./drift/Dockerfile.drift
-          
+          docker build -f drift/Dockerfile.drift -t drift-monitor 
+                    
           # 2. Exécution du conteneur
           docker run \
             --rm \
