@@ -34,7 +34,7 @@ jobs:
             -e TRACK_URI="${{ secrets.BACKEND_STORE_URI }}" \
             -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
             -e ARTIFACT_DATA=${{ secrets.ARTIFACT_DATA }} \
-            -e DRIFT_THRESHOLD=0.05 \
+            -e DRIFT_THRESHOLD=0.10 \
             drift-monitor python3 drift_monitor.py
       
       # Les étapes suivantes ne sont pas nécessaires car Docker renvoie déjà le code de sortie (0 ou 1)

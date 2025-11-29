@@ -16,6 +16,5 @@ COPY --chown=user ./drift/drift_monitor.py .
 
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
-RUN pip show mlflow
 
 #pas de CMD ici car il sera lancé directement par GitHub Actions.
