@@ -1,6 +1,12 @@
 name: train
 
+
 on:
+   push:
+    tags:
+      - "train-*"
+
+#on:
   #workflow_dispatch:
   #push:
   #  branches: ["main"]
