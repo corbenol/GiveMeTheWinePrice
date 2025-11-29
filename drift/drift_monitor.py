@@ -17,7 +17,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # --- Constantes pour la connexion MLflow ---
 
-TRACK_URI=os.getenv("BACKEND_STORE_URI")
+TRACK_URI=os.getenv("TRACK_URI")
 REGISTERED_MODEL_NAME = "WinePriceRegressorPipeline"
 # Alias MLflow pour le modèle en production 
 MODEL_ALIAS = "production" 
