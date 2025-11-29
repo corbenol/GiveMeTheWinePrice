@@ -108,13 +108,16 @@ def load_mlflow_model_and_metrics(model_name: str, alias: str):
     Charge le modèle de production et récupère la métrique de référence.
     Retourne le pipeline chargé et la métrique de référence (RMSE log).
     """
+    log.info(f'serveur MLFLOW : {TRACK_URI}')
     mlflow.set_tracking_uri(TRACK_URI)
     client = MlflowClient()
 
-    # 1. Charger le pipeline (basé sur l'alias, e.g., 'Production')
+    # 1. Charger le pipeline (basé sur l'alias, e.g., 'production')
     model_uri = f"models:/{model_name}@{alias}"
+
     log.info(f"Chargement du pipeline de production depuis: {model_uri}")
     full_pipeline = mlflow.sklearn.load_model(model_uri)
+    log.info(f'pipeline : {full_pipeline}')
     
     # 2. Récupérer la version du modèle pour trouver la métrique de référence
     try:
