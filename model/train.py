@@ -57,7 +57,7 @@ def initial_data_cleaning(df):
     """
     Effectue les opérations de nettoyage non intégrables au ColumnTransformer.
     """
-    # Suppression des lignes sans prix (cible) ou prix = 0 et sans payx
+    # Suppression des lignes sans prix (cible) ou prix = 0 et sans pays
     df = df.dropna(subset=['price','country'])
     df = df[df['price'] > 0] 
 
@@ -124,7 +124,8 @@ def create_preprocessor(df_train):
 
 def run_mlops_pipeline_with_mlflow(df_raw):
     
-    TRACK_URI='http://ec2-16-16-98-201.eu-north-1.compute.amazonaws.com:5000'
+    #TRACK_URI='http://ec2-16-16-98-201.eu-north-1.compute.amazonaws.com:5000'
+    TRACK_URI=os.getenv("BACKEND_STORE_URI")
     EXPERIMENT_NAME="Wine_Price_Regression"
     log.info(f"Mlflow tracking, URI : {TRACK_URI}, Experiment : {EXPERIMENT_NAME}")
     # Nom de l'expérience MLflow
@@ -225,7 +226,7 @@ if __name__ == '__main__':
     try:
         # ouverture du fichier sur S3
         s3_base = os.getenv("ARTIFACT_DATA")  # ex: "s3://mon_bucket/mon_répertoire/"
-        filename = "winemag-data-130k-v2.csv"
+        filename = "winemag-train.csv"
         s3_base = s3_base.rstrip('/')  
         parts = s3_base.replace("s3://", "").split("/", 1)
         bucket = parts[0]

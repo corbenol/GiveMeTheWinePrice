@@ -1,0 +1,53 @@
+name: Drift modèle
+
+# Déclenche le workflow manuellement ou selon un calendrier hebdomadaire
+on:
+   push:
+    tags:
+      - "drift-*"
+
+   #workflow_dispatch:
+  #schedule:
+    # S'exécute chaque lundi à 02:00 UTC
+  #  - cron: '0 2 * * 1' 
+
+jobs:
+  monitor_drift:
+    runs-on: ubuntu-latest
+    
+    # 1. Montage du conteneur Docker
+    steps:
+      - name: Checkout du Code
+        uses: actions/checkout@v4
+
+      - name: Construire et Exécuter le Conteneur du Moniteur de Dérive
+        # Utilisation de 'docker run' pour exécuter le script dans un environnement conteneurisé
+        run: |
+          # 1. Construction de l'image Docker à partir du répertoire 'drift'
+          # Le chemin du Dockerfile est relatif à la racine du dépôt.
+          docker build -t drift-monitor ./drift/Dockerfile.drift
+          
+          # 2. Exécution du conteneur
+          docker run \
+            --rm \
+            -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
+            -e TRACK_URI="${{ secrets.BACKEND_STORE_URI }}" \
+            -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+            -e ARTIFACT_DATA=${{ secrets.ARTIFACT_DATA }} \
+            -e DRIFT_THRESHOLD=0.05 \
+            drift-monitor python3 drift_monitor.py
+      
+      # Les étapes suivantes ne sont pas nécessaires car Docker renvoie déjà le code de sortie (0 ou 1)
+      # du script python, ce qui fait échouer l'étape 'docker run' si drift_monitor.py renvoie 1.
+      
+      # Le statut du job sera 'Success' si le script a réussi (exit 0) ou 'Failure' si la dérive est détectée (exit 1).
+      - name: Rapport sur la Surveillance
+        if: always()
+        run: |
+          if [ $? -eq 0 ]; then
+            echo "✅ Succès: Le modèle a passé le test de dérive (performance stable)."
+          else
+            echo "🚨 ÉCHEC: DÉRIVE DU MODÈLE DÉTECTÉE."
+            echo "Le modèle a dépassé le seuil de dérive de 0.05. Veuillez inspecter les données de test S3 et le modèle MLflow."
+            exit 1
+          fi

@@ -1,0 +1,20 @@
+# Utilisation de la même image de base que celle utilisée pour le reste du projet
+FROM python:3.10-slim
+
+# Configuration de l'utilisateur (bonne pratique de sécurité)
+RUN useradd -m -u 1000 user
+USER user
+ENV PATH="/home/user/.local/bin:$PATH"
+
+WORKDIR /app
+
+# Copie des dépendances et installation
+# Le chemin est relatif au contexte de build (qui sera le dossier 'drift' dans le workflow)
+COPY --chown=user requirements-drift.txt requirements.txt
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
+
+# Copie du script Python
+COPY --chown=user drift_monitor.py drift_monitor.py
+
+# Définition de la commande par défaut (sera surchargée par le workflow)
+# Nous ne définissons pas de CMD ici car il sera lancé directement par GitHub Actions.
