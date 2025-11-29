@@ -50,6 +50,8 @@ jobs:
 
           python3 - << "EOF"
           import mlflow
+          import warnings
+          warnings.simplefilter(action='ignore', category=FutureWarning)
 
           client = mlflow.MlflowClient()
           model_name="WinePriceRegressorPipeline"

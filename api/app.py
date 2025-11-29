@@ -2,6 +2,7 @@ from typing import  Union
 import pandas as pd
 import numpy as np
 import mlflow.pyfunc
+from mlflow.tracking import MlflowClient
 from fastapi import FastAPI
 from pydantic import BaseModel, field_validator
 from starlette.responses import RedirectResponse
@@ -64,13 +65,19 @@ class WineFeatures(BaseModel):
 # --- Chargement du Modèle au Démarrage ---
 try:
     mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+    client = MlflowClient()
     # Charge le modèle le plus récent aliasé 'Production'
     logged_model_uri = f"models:/{MODEL_NAME}@{MODEL_STAGE}"
     print(logged_model_uri)
     model = mlflow.pyfunc.load_model(logged_model_uri)
     print("Modèle chargé avec succès depuis MLflow.")
+    version_info = client.get_model_version_by_alias(model_name, alias)
+    version_info_list = [version_info]
+    mv = version_info_list[0]  
+    version = mv.version
+
 except Exception as e:
-    print(f"ÉCHEC DU CHARGEMENT DU MODÈLE MLFLOW : {e}")
+    print(f"ÉCHEC DU CHARGEMENT DU MODÈLE MLFLOW ET DE SA VERSION : {e}")
     model = None 
     exit(3)
 
@@ -118,7 +125,7 @@ async def index():
 def health_check():
     """ Vérifie que le service est en ligne et que le modèle est chargé. """
     status = "OK" if model is not None else "Model Loading Failed"
-    return {"status": status, "model_name": MODEL_NAME}
+    return {"status": status, "model_name": MODEL_NAME, "model_version" : version}
 
 @app.post("/predict",tags=["Machine Learning"])
 async def predict_price(features: WineFeatures):
