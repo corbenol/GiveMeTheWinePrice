@@ -122,14 +122,17 @@ def load_mlflow_model_and_metrics(model_name: str, alias: str):
     # 2. Récupérer la version du modèle pour trouver la métrique de référence
     try:
         # Tente de récupérer la version par alias
-        # Tente de récupérer la version par alias
         version_info = client.get_model_version_by_alias(model_name, alias)
-        if not version_info:
+        version_info_list = [version_info]
+        if not version_info_list:
              # Si l'alias ne renvoie rien, essaie de récupérer la dernière version tout court.
-            version_info = client.get_latest_versions(model_name, stages=[alias])
+            version_info_list = client.get_latest_versions(model_name, stages=[alias])
+            if not version_info_list:
+                raise ValueError(f"Aucune version trouvée pour l'alias/stage '{alias}'")
 
-        version = version_info[0].version
-        run_id = version_info[0].run_id
+        mv = version_info_list[0]  
+        version = mv.version
+        run_id = mv.run_id
 
         # 3. Récupérer la métrique de référence (RMSE log)
         metric_value = client.get_run(run_id).data.metrics.get(METRIC_NAME)
