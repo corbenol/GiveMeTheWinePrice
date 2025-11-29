@@ -122,15 +122,12 @@ def load_mlflow_model_and_metrics(model_name: str, alias: str):
     # 2. Récupérer la version du modèle pour trouver la métrique de référence
     try:
         # Tente de récupérer la version par alias
-        version_info = client.get_latest_versions(model_name, aliases=[alias])
+        #version_info = client.get_latest_versions(model_name, aliases=[alias])
+        log.info(f"Récupération de la version du modèle pour le stage/alias '{alias}'.")
+        version_info = client.get_latest_versions(model_name, stages=[alias])
+                
         if not version_info:
-             # Si l'alias ne renvoie rien, essaie de récupérer la dernière version tout court.
-            #version_info = client.get_latest_versions(model_name, stages=[alias])
-            log.info(f"Récupération de la version du modèle pour le stage/alias '{alias}'.")
-            version_info = client.get_latest_versions(model_name, stages=[alias])
-
-        if not version_info:
-            log.error(f"Aucune version du modèle trouvée pour l'alias/stage '{alias}'.")
+            log.error(f"Aucune version du modèle trouvée pour le stage/alias '{alias}' sur le modèle '{model_name}'.")
             raise ValueError(f"Aucune version trouvée.")
 
         version = version_info[0].version
