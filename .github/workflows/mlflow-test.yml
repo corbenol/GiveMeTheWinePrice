@@ -52,14 +52,14 @@ jobs:
           import mlflow
 
           client = mlflow.MlflowClient()
-          #model_name = "${MODEL_NAME}"
           model_name="WinePriceRegressorPipeline"
 
           print(f'modele : {model_name}')
-          
-
           v = client.get_model_version_by_alias(model_name, "ready_to_test")
+          print(f"L'alias 'ready_to_test' pointe vers la version : {v.version}")
+          client.delete_registered_model_alias(model_name, "ready_to_test")
+          print("Alias 'ready_to_test' supprimé")
           client.set_registered_model_alias(model_name, "production", v.version)
-
+          print(f"Alias 'production' mis à jour pour pointer vers la version {v.version}")
           print(f"Version {v.version} promoted to production")
           EOF

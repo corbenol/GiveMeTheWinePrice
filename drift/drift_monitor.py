@@ -123,7 +123,7 @@ def load_mlflow_model_and_metrics(model_name: str, alias: str):
     try:
         # Tente de récupérer la version par alias
         # Tente de récupérer la version par alias
-        version_info = client.get_latest_versions(model_name, aliases=[alias])
+        version_info = client.get_model_version_by_alias(model_name, alias)
         if not version_info:
              # Si l'alias ne renvoie rien, essaie de récupérer la dernière version tout court.
             version_info = client.get_latest_versions(model_name, stages=[alias])
