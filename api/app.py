@@ -71,10 +71,10 @@ try:
     print(logged_model_uri)
     model = mlflow.pyfunc.load_model(logged_model_uri)
     print("Modèle chargé avec succès depuis MLflow.")
-    version_info = client.get_model_version_by_alias(model_name, alias)
+    version_info = client.get_model_version_by_alias(MODEL_NAME, MODEL_STAGE)
     version_info_list = [version_info]
     mv = version_info_list[0]  
-    version = mv.version
+    VERSION = mv.version
 
 except Exception as e:
     print(f"ÉCHEC DU CHARGEMENT DU MODÈLE MLFLOW ET DE SA VERSION : {e}")
@@ -125,7 +125,7 @@ async def index():
 def health_check():
     """ Vérifie que le service est en ligne et que le modèle est chargé. """
     status = "OK" if model is not None else "Model Loading Failed"
-    return {"status": status, "model_name": MODEL_NAME, "model_version" : version}
+    return {"status": status, "model_name": MODEL_NAME, "model_version" : VERSION}
 
 @app.post("/predict",tags=["Machine Learning"])
 async def predict_price(features: WineFeatures):
