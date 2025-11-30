@@ -176,10 +176,9 @@ def run_mlops_pipeline_with_mlflow(df_raw,dataset_s3_path):
 
         # : ÉVALUATION ET SUIVI DES MÉTRIQUES ---
         predictions = full_pipeline.predict(X_test)
-        
+      
         rmse = np.sqrt(mean_squared_error(y_test, predictions))
         r2 = r2_score(y_test, predictions)
-
         # Log des métriques
         mlflow.log_metric("test_rmse_log_scale", rmse)
         mlflow.log_metric("test_r2_score", r2)
@@ -215,6 +214,14 @@ def run_mlops_pipeline_with_mlflow(df_raw,dataset_s3_path):
         )
 
         log.info(f"Alias MLflow set : ready_to_test → version {model_version}")
+        # Ajouter le tag S3 *dans la version du modèle*
+        client.set_model_version_tag(
+               name="WinePriceRegressorPipeline",
+               version=model_version,
+               key="dataset_s3_path",
+               value=dataset_s3_path
+        )
+        log.info(f"Tag ajouté dans le modèle : dataset_s3_path={dataset_s3_path}")
         
     return full_pipeline
 
