@@ -122,7 +122,7 @@ def create_preprocessor(df_train):
     )
     return preprocessor
 
-def run_mlops_pipeline_with_mlflow(df_raw):
+def run_mlops_pipeline_with_mlflow(df_raw,dataset_s3_path):
     
     #TRACK_URI='http://ec2-16-16-98-201.eu-north-1.compute.amazonaws.com:5000'
     TRACK_URI=os.getenv("BACKEND_STORE_URI")
@@ -137,7 +137,7 @@ def run_mlops_pipeline_with_mlflow(df_raw):
     # Démarre une nouvelle exécution MLflow
     with mlflow.start_run(experiment_id = experiment.experiment_id) as run:
         
-        #  PRÉPARATION DES DONNÉES ---
+                #  PRÉPARATION DES DONNÉES ---
         df_cleaned = initial_data_cleaning(df_raw.copy())
         X = df_cleaned.drop(columns=['price', 'log_price'])
         y = df_cleaned['log_price']
@@ -160,6 +160,10 @@ def run_mlops_pipeline_with_mlflow(df_raw):
             ('regressor', regressor)
         ])
 
+        # tag le dataset
+        mlflow.set_tag("dataset_s3_path", dataset_s3_path)
+        log.info(f"Dataset utilisé : {dataset_s3_path}")
+        
         # Log des hyperparamètres
         mlflow.log_params(params)
         mlflow.log_param("tfidf_max_features", 500)
@@ -241,7 +245,8 @@ if __name__ == '__main__':
         log.error("Erreur : Fichier CSV non trouvé. ")
         exit(3)
     start_time = time.time()
-    full_pipeline = run_mlops_pipeline_with_mlflow(df_raw)
+    dataset_s3_path = f"s3://{bucket}/{key}"
+    full_pipeline = run_mlops_pipeline_with_mlflow(df_raw,dataset_s3_path)
     #best_pipeline=run_tuning_pipeline_with_mlflow(df_raw)
     log.info(f"---Total training time: {time.time()-start_time}")
 
