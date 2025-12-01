@@ -30,6 +30,7 @@ jobs:
           MODEL_STAGE: ready_to_test
         run: |
           docker run --rm \
+            -u 0 \
             -w /app \
             -v ${{ github.workspace }}:/app \
             -e MLFLOW_TRACKING_URI \
