@@ -25,7 +25,7 @@ jobs:
           docker run --rm \
            -u 0 \
            -w /app \
-           -v ${{ github.workspace }}:/test-output:/tmp/reports \
+            -v ${{ github.workspace }}/test-output:/tmp/reports \
            -e API_URL="http://localhost:7860"\
            -e MLFLOW_TRACKING_URI="${{ secrets.BACKEND_STORE_URI }}" \
            -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
