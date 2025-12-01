@@ -31,7 +31,7 @@ jobs:
            -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" \
            -e NEON_URI="${{ secrets.NEON_TEST }}" \
             wine-api-test \
-            /bin/bash -c "uvicorn app:app --host 0.0.0.0 --port 7860 & python3 wait_for_api.py && pytest tests -v --junitxml=test-results-api.xml"
+            /bin/bash -c "uvicorn app:app --host 0.0.0.0 --port 7860 & python3 wait_for_api.py && pytest api/tests -v --junitxml=test-results-api.xml"
       # ------------------------------------------------------------------
       # Upload API test results as artifact
       # ------------------------------------------------------------------
