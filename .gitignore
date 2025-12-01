@@ -2,3 +2,5 @@ secrets.sh
 tracker_aws/mlflow.env
 secret.sh
 .t_venv
+del_tags.sh
+set_token.sh

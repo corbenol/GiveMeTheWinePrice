@@ -22,13 +22,14 @@ jobs:
       - name: Run tests
         run: |
           docker run --rm \
+           -v ${{ github.workspace }}:/app \
            -e API_URL="http://localhost:7860"\
            -e MLFLOW_TRACKING_URI="${{ secrets.BACKEND_STORE_URI }}" \
            -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
            -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" \
            -e NEON_URI="${{ secrets.NEON_TEST }}" \
             wine-api-test \
-            /bin/bash -c "uvicorn app:app --host 0.0.0.0 --port 7860 & python3 wait_for_api.py && pytest tests -v --junitxml=/github/workspace/test-results-api.xml"
+            /bin/bash -c "uvicorn app:app --host 0.0.0.0 --port 7860 & python3 wait_for_api.py && pytest tests -v --junitxml=test-results-api.xml"
       # ------------------------------------------------------------------
       # Upload API test results as artifact
       # ------------------------------------------------------------------
