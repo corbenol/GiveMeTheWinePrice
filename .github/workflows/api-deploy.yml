@@ -22,6 +22,7 @@ jobs:
       - name: Run tests
         run: |
           docker run --rm \
+           -w /app \
            -v ${{ github.workspace }}:/app \
            -e API_URL="http://localhost:7860"\
            -e MLFLOW_TRACKING_URI="${{ secrets.BACKEND_STORE_URI }}" \
