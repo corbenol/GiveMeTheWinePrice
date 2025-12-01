@@ -36,9 +36,20 @@ jobs:
             -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
             -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
             wine-test:latest \
-            pytest tests -v
+            pytest tests -v --junitxml=/github/workspace/test-results.xml
 
       # ------------------------------------------------------------------
+      # Upload test results as artifact
+      # ------------------------------------------------------------------
+      - name: Upload test results artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-test-results-${{ github.sha }}
+          path: test-results.xml
+          retention-days: 7
+               
+      
+            # ------------------------------------------------------------------
       # Promote to production if tests pass
       # ------------------------------------------------------------------
       - name: Promote MLflow alias to production

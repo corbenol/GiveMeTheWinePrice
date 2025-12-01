@@ -19,6 +19,9 @@ RUN pip install --no-cache-dir -r requirements-test.txt
 # Exposer le port de l'API
 EXPOSE 7860
 
+
+# La ligne CMD est supprimée, car le workflow 'api-deploy.yml'
+# fournit la commande d'exécution complète (lancement de l'API + pytest)
+
 # Commande pour démarrer le serveur et exécuter les tests
-#CMD sh -c "uvicorn app:app --host 0.0.0.0 --port 7860 & pytest tests -v"
-CMD ["/bin/bash", "-c", "uvicorn app:app --host 0.0.0.0 --port 7860 & python3 wait_for_api.py && pytest tests -v"]
+#CMD ["/bin/bash", "-c", "uvicorn app:app --host 0.0.0.0 --port 7860 & python3 wait_for_api.py && pytest tests -v"]

@@ -10,11 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
+      # ------------------------------------------------------------------
+      # Build Docker test image (api/tests/Dockerfile.test)
+      # ------------------------------------------------------------------
       - name: Build test image
         run: |
           docker build -f api/tests/Dockerfile.test -t wine-api-test .
-          
+      # ------------------------------------------------------------------
+      # Run integration tests and generate XML report
+      # ------------------------------------------------------------------      
       - name: Run tests
         run: |
           docker run --rm \
@@ -23,8 +27,17 @@ jobs:
            -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
            -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" \
            -e NEON_URI="${{ secrets.NEON_TEST }}" \
-            wine-api-test
-
+            wine-api-test \
+            /bin/bash -c "uvicorn app:app --host 0.0.0.0 --port 7860 & python3 wait_for_api.py && pytest tests -v --junitxml=/github/workspace/test-results-api.xml"
+      # ------------------------------------------------------------------
+      # Upload API test results as artifact
+      # ------------------------------------------------------------------
+      - name: Upload API test results artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-test-results-${{ github.sha }}
+          path: test-results-api.xml
+          retention-days: 7
 
   deploy:
     needs: test
@@ -32,17 +45,23 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
+      # ------------------------------------------------------------------
+      # Install Hugging Face client
+      # ------------------------------------------------------------------ 
       - name: Install HF client
         run: pip install huggingface_hub
-
+       # ------------------------------------------------------------------
+      # Prepare HuggingFace Space folder
+      # ------------------------------------------------------------------ 
       - name: Prepare HuggingFace Space folder
         run: |
           mkdir hf-space
           cp api/app.py hf-space/app.py
           cp api/requirements-api.txt hf-space/requirements.txt
           cp api/Dockerfile hf-space/Dockerfile
-
+      # ------------------------------------------------------------------
+      # Push to HuggingFace Space
+      # ------------------------------------------------------------------ 
       - name: Push to HuggingFace Space
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
