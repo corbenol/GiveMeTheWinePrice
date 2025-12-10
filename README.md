@@ -38,6 +38,7 @@ Voici l'organisation principale du dépôt :
 
 
 
+
 .
 ├── .github/
 │   └── workflows/
@@ -86,6 +87,7 @@ Voici l'organisation principale du dépôt :
 │   ├── requirements.txt                # Dépendances MLflow Server
 │   └── run_docker.sh                   # Lancement du conteneur MLflow
 └── README.md                           # Documentation du projet
+
 
 ## ⚙️ Workflows MLOps avec GitHub Actions
 
