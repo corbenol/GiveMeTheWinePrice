@@ -1,6 +1,6 @@
 # 🍷 Give Me The Wine Price - Application de Prédiction du Prix du Vin
 
-Ce dépôt (`corbenol/GiveMeTheWinePrice`) contient l'intégralité de la chaîne MLOps pour l'entraînement, la validation, le monitoring et le déploiement d'un modèle de régression du prix du vin.
+Ce dépôt (`corbenol/GiveMeTheWinePrice`) contient l'intégralité de la chaîne MLOps pour l'entraînement, la validation, le monitoring et le déploiement d'un modèle de régression permettant de prédire un prix pour une bouteille de vin.
 
 L'application d'inférence est une API **FastAPI** qui utilise **MLflow** pour charger le modèle de production et **Neon (PostgreSQL)** pour la journalisation des requêtes (Inference Logging).
 
@@ -36,54 +36,54 @@ L'architecture est construite sur une séparation claire des environnements :
 
 Voici l'organisation principale du dépôt :  
 
-.  
-├── .github/  
-│   └── workflows/  
-│       ├── api-deploy.yml          # Déploiement de l'API sur Hugging Face  
-│       ├── drift_monitoring.yaml   # Surveillance de la dérive (drift)  
-│       ├── mlflow-test.yml         # Tests unitaires et promotion du modèle  
-│       └── mlflow-train.yml        # Entraînement sur EC2 via SSH  
-├── analyse/  
-│   └── eda.ipynb                   # Analyse exploratoire des données  
-├── api/  
-│   ├── Dockerfile                  # Image Docker pour le déploiement de l'API  
-│   ├── app.py                      # Application principale FastAPI (Inférence)  
-│   ├── app.sav                     # Sauvegarde du modèle sérialisé pour le dev local  
-│   ├── requirements-api.txt        # Dépendances Python pour l'API  
-│   ├── test_url.sh                 # Script shell pour tester l'URL de l'API  
-│   └── tests/  
-│       ├── Dockerfile.test         # Image pour l'exécution des tests d'intégration API  
-│       ├── conftest.py             # Fichier de configuration Pytest  
-│       ├── requirements-test.txt   # Dépendances pour les tests  
-│       ├── test_health.py          # Test de l'endpoint /health  
-│       ├── test_prediction_invalid.py # Test des requêtes invalides  
-│       ├── test_prediction_valid.py   # Test des requêtes valides  
-│       └── wait_for_api.py         # Utilitaire pour attendre le démarrage de l'API  
-├── drift/  
-│   ├── Dockerfile.drift            # Image Docker pour l'environnement de monitoring  
-│   ├── drift_monitor.py            # Script de monitoring Evidently AI  
-│   └── requirements-drift.txt      # Dépendances Python pour le monitoring  
-├── model/  
-│   ├── Dockerfile.train            # Image Docker pour l'environnement d'entraînement  
-│   ├── MLproject                   # Configuration du projet MLflow  
-│   ├── requirements-train.txt      # Dépendances pour l'entraînement  
-│   ├── secret.sh                   # Script pour définir les secrets (local/EC2)  
-│   ├── tests/  
-│   │   ├── Dockerfile.test         # Image pour l'exécution des tests du modèle  
-│   │   ├── conftest.py             # Fichier de configuration Pytest  
-│   │   ├── requirements-test.txt   # Dépendances pour les tests du modèle  
-│   │   ├── test_model_load.py      # Test de chargement du modèle  
-│   │   ├── test_predictions.py     # Test de prédictions simples  
-│   │   └── test_signature.py       # Test de la signature MLflow  
-│   └── train.py                    # Script d'entraînement et de logging MLflow  
-├── tracker_aws/  
-│   ├── Dockerfile                  # Dockerfile pour le serveur MLflow  
-│   ├── build.sh                    # Script de construction de l'image Docker  
-│   ├── commande_ssh_EC2.sh         # Exemple de commande pour SSH  
-│   ├── mlflow.env                  # Variables d'environnement pour MLflow  
-│   ├── requirements.txt            # Dépendances Python pour le serveur MLflow  
-│   └── run_docker.sh               # Script de lancement du conteneur MLflow  
-└── README.md                       # Ce fichier  
+.
+├── .github/
+│ └── workflows/
+│ ├── api-deploy.yml # Déploiement de l'API sur Hugging Face
+│ ├── drift_monitoring.yaml # Surveillance de la dérive (drift)
+│ ├── mlflow-test.yml # Tests unitaires et promotion du modèle
+│ └── mlflow-train.yml # Entraînement sur EC2 via SSH
+├── analyse/
+│ └── eda.ipynb # Analyse exploratoire des données
+├── api/
+│ ├── Dockerfile # Image Docker pour le déploiement de l'API
+│ ├── app.py # Application principale FastAPI (Inférence)
+│ ├── app.sav # Modèle sérialisé pour le dev local
+│ ├── requirements-api.txt # Dépendances Python pour l'API
+│ ├── test_url.sh # Script de test de l'URL de l'API
+│ └── tests/
+│ ├── Dockerfile.test # Image pour les tests d'intégration API
+│ ├── conftest.py # Configuration Pytest
+│ ├── requirements-test.txt # Dépendances pour les tests
+│ ├── test_health.py # Test de l'endpoint /health
+│ ├── test_prediction_invalid.py # Test des requêtes invalides
+│ ├── test_prediction_valid.py # Test des requêtes valides
+│ └── wait_for_api.py # Attente du démarrage de l'API
+├── drift/
+│ ├── Dockerfile.drift # Image Docker monitoring
+│ ├── drift_monitor.py # Script Evidently AI
+│ └── requirements-drift.txt # Dépendances monitoring
+├── model/
+│ ├── Dockerfile.train # Image Docker pour l'entraînement
+│ ├── MLproject # Config MLflow
+│ ├── requirements-train.txt # Dépendances pour l'entraînement
+│ ├── secret.sh # Secrets (local/EC2)
+│ ├── tests/
+│ │ ├── Dockerfile.test # Image tests du modèle
+│ │ ├── conftest.py # Config Pytest
+│ │ ├── requirements-test.txt # Dépendances tests
+│ │ ├── test_model_load.py # Test de chargement du modèle
+│ │ ├── test_predictions.py # Test prédictions simples
+│ │ └── test_signature.py # Test signature MLflow
+│ └── train.py # Script d'entraînement MLflow
+├── tracker_aws/
+│ ├── Dockerfile # Dockerfile MLflow Server
+│ ├── build.sh # Build de l'image
+│ ├── commande_ssh_EC2.sh # Exemples de commandes SSH
+│ ├── mlflow.env # Variables d'environnement
+│ ├── requirements.txt # Dépendances MLflow Server
+│ └── run_docker.sh # Lancement du conteneur MLflow
+└── README.md # Documentation du projet
 
 ## ⚙️ Workflows MLOps avec GitHub Actions
 
@@ -129,7 +129,7 @@ Le déploiement est automatique après un tag `deploy-*` et l'exécution réussi
 
 ## 🔎 Comment Utiliser et Tester l'API (Inférence)
 
-L'API est accessible sur votre Space Hugging Face (ex: `https://corbenol-wine-price-predictor.hf.space`).
+L'API est accessible sur un service Space Hugging Face (ex: `https://corbenol-wine-price-predictor.hf.space`).
 
 ### Endpoint de Santé (`/health`)
 
@@ -144,7 +144,7 @@ Vérifie l'état du service et confirme la version du modèle chargé à partir 
 { "country": "france", "description": "art and snappy, the flavors of lime flesh and rind dominate.", "province": "bordeaux", "millesime": "2018" }
 
 
-**Exemple de Commande cURL (à adapter avec votre URL finale) :**
+**Exemple de Commande cURL  :**
 
 curl -X POST 'https://corbenol-wine-price-predictor.hf.space/predict'
 
