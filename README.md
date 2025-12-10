@@ -36,54 +36,56 @@ L'architecture est construite sur une séparation claire des environnements :
 
 Voici l'organisation principale du dépôt :  
 
+
+
 .
 ├── .github/
-│ └── workflows/
-│ ├── api-deploy.yml # Déploiement de l'API sur Hugging Face
-│ ├── drift_monitoring.yaml # Surveillance de la dérive (drift)
-│ ├── mlflow-test.yml # Tests unitaires et promotion du modèle
-│ └── mlflow-train.yml # Entraînement sur EC2 via SSH
+│   └── workflows/
+│       ├── api-deploy.yml              # Déploiement de l'API sur Hugging Face
+│       ├── drift_monitoring.yaml       # Surveillance de la dérive (drift)
+│       ├── mlflow-test.yml             # Tests unitaires et promotion du modèle
+│       └── mlflow-train.yml            # Entraînement sur EC2 via SSH
 ├── analyse/
-│ └── eda.ipynb # Analyse exploratoire des données
+│   └── eda.ipynb                       # Analyse exploratoire des données
 ├── api/
-│ ├── Dockerfile # Image Docker pour le déploiement de l'API
-│ ├── app.py # Application principale FastAPI (Inférence)
-│ ├── app.sav # Modèle sérialisé pour le dev local
-│ ├── requirements-api.txt # Dépendances Python pour l'API
-│ ├── test_url.sh # Script de test de l'URL de l'API
-│ └── tests/
-│ ├── Dockerfile.test # Image pour les tests d'intégration API
-│ ├── conftest.py # Configuration Pytest
-│ ├── requirements-test.txt # Dépendances pour les tests
-│ ├── test_health.py # Test de l'endpoint /health
-│ ├── test_prediction_invalid.py # Test des requêtes invalides
-│ ├── test_prediction_valid.py # Test des requêtes valides
-│ └── wait_for_api.py # Attente du démarrage de l'API
+│   ├── Dockerfile                      # Image Docker pour le déploiement de l'API
+│   ├── app.py                          # Application principale FastAPI (Inférence)
+│   ├── app.sav                         # Modèle sérialisé pour le dev local
+│   ├── requirements-api.txt            # Dépendances Python pour l'API
+│   ├── test_url.sh                     # Script de test de l'URL de l'API
+│   └── tests/
+│       ├── Dockerfile.test             # Image pour les tests d'intégration API
+│       ├── conftest.py                 # Configuration Pytest
+│       ├── requirements-test.txt       # Dépendances pour les tests
+│       ├── test_health.py              # Test de l'endpoint /health
+│       ├── test_prediction_invalid.py  # Test des requêtes invalides
+│       ├── test_prediction_valid.py    # Test des requêtes valides
+│       └── wait_for_api.py             # Attente du démarrage de l'API
 ├── drift/
-│ ├── Dockerfile.drift # Image Docker monitoring
-│ ├── drift_monitor.py # Script Evidently AI
-│ └── requirements-drift.txt # Dépendances monitoring
+│   ├── Dockerfile.drift                # Image Docker monitoring
+│   ├── drift_monitor.py                # Script Evidently AI
+│   └── requirements-drift.txt          # Dépendances monitoring
 ├── model/
-│ ├── Dockerfile.train # Image Docker pour l'entraînement
-│ ├── MLproject # Config MLflow
-│ ├── requirements-train.txt # Dépendances pour l'entraînement
-│ ├── secret.sh # Secrets (local/EC2)
-│ ├── tests/
-│ │ ├── Dockerfile.test # Image tests du modèle
-│ │ ├── conftest.py # Config Pytest
-│ │ ├── requirements-test.txt # Dépendances tests
-│ │ ├── test_model_load.py # Test de chargement du modèle
-│ │ ├── test_predictions.py # Test prédictions simples
-│ │ └── test_signature.py # Test signature MLflow
-│ └── train.py # Script d'entraînement MLflow
+│   ├── Dockerfile.train                # Image Docker pour l'entraînement
+│   ├── MLproject                       # Config MLflow
+│   ├── requirements-train.txt          # Dépendances pour l'entraînement
+│   ├── secret.sh                       # Secrets (local/EC2)
+│   ├── tests/
+│   │   ├── Dockerfile.test             # Image tests du modèle
+│   │   ├── conftest.py                 # Config Pytest
+│   │   ├── requirements-test.txt       # Dépendances tests
+│   │   ├── test_model_load.py          # Test de chargement du modèle
+│   │   ├── test_predictions.py         # Test prédictions simples
+│   │   └── test_signature.py           # Test signature MLflow
+│   └── train.py                        # Script d'entraînement MLflow
 ├── tracker_aws/
-│ ├── Dockerfile # Dockerfile MLflow Server
-│ ├── build.sh # Build de l'image
-│ ├── commande_ssh_EC2.sh # Exemples de commandes SSH
-│ ├── mlflow.env # Variables d'environnement
-│ ├── requirements.txt # Dépendances MLflow Server
-│ └── run_docker.sh # Lancement du conteneur MLflow
-└── README.md # Documentation du projet
+│   ├── Dockerfile                      # Dockerfile MLflow Server
+│   ├── build.sh                        # Build de l'image
+│   ├── commande_ssh_EC2.sh             # Exemple de commande SSH
+│   ├── mlflow.env                      # Variables d'environnement
+│   ├── requirements.txt                # Dépendances MLflow Server
+│   └── run_docker.sh                   # Lancement du conteneur MLflow
+└── README.md                           # Documentation du projet
 
 ## ⚙️ Workflows MLOps avec GitHub Actions
 
