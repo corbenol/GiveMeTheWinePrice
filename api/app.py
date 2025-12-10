@@ -110,7 +110,7 @@ init_db()
 
 app = FastAPI(title="Quel prix pour ce vin ?",
     description=description,
-    version="0.3",
+    version="0.4",
     openapi_tags=tags_metadata
 )
 
