@@ -36,9 +36,6 @@ L'architecture est construite sur une séparation claire des environnements :
 
 Voici l'organisation principale du dépôt :  
 
-
-
-
 . 
 ├── .github/  
 │   └── workflows/  
@@ -89,56 +86,6 @@ Voici l'organisation principale du dépôt :
 └── README.md                       # Ce fichier  
 
 
-.
-├── README.md  
-├── analyse  
-│   ├── eda.ipynb  
-│   ├── eda.md  
-│   └── eda_files  
-│       ├── eda_4_1.png  
-│       ├── eda_5_0.png  
-│       └── eda_8_1.png  
-├── api  
-│   ├── Dockerfile  
-│   ├── app.py  
-│   ├── app.sav  
-│   ├── requirements-api.txt  
-│   ├── test_url.sh  
-│   └── tests  
-│       ├── Dockerfile.test  
-│       ├── conftest.py  
-│       ├── requirements-test.txt  
-│       ├── test_health.py 
-│       ├── test_prediction_invalid.py  
-│       ├── test_prediction_valid.py  
-│       └── wait_for_api.py  
-├── del_tags.sh  
-├── drift  
-│   ├── Dockerfile.drift  
-│   ├── drift_monitor.py  
-│   └── requirements-drift.txt 
-├── model  
-│   ├── Dockerfile.train  
-│   ├── MLproject  
-│   ├── requirements-train.txt  
-│   ├── secret.sh  
-│   ├── tests  
-│   │   ├── Dockerfile.test  
-│   │   ├── conftest.py  
-│   │   ├── requirements-test.txt  
-│   │   ├── test_model_load.py  
-│   │   ├── test_predictions.py  
-│   │   └── test_signature.py  
-│   ├── train.py  
-│   └── train_random_forest.py  
-├── set_token.sh  
-└── tracker_aws  
-    ├── Dockerfile  
-    ├── build.sh  
-    ├── commande_ssh_EC2.sh  
-    ├── mlflow.env  
-    ├── requirements.txt  
-    └── run_docker.sh  
 
 
 ## ⚙️ Workflows MLOps avec GitHub Actions
